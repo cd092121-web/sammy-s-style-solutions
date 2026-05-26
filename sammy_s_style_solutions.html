@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sammy's Style Solutions | 品牌視覺與商業策略顧問</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- FontAwesome (for portfolio icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Tailwind CSS (via CDN with Custom Config) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            bg: '#E8D3B9',       // 米色背景
+                            dark: '#6F6F4F',     // 棕灰色深色
+                            terra: '#D77A73',    // 陶土紅 (輔助色1)
+                            gold: '#4A6C96',     // 霧面金改為主色藍
+                            mint: '#F1A551',     // 強調色改為橙色
+                            glass: 'rgba(255, 255, 255, 0.6)',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                        tech: ['"Space Grotesk"', 'sans-serif'], // 用於英文小標或按鈕
+                    },
+                    backgroundImage: {
+                        'glass-gradient': 'linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 100%)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* ==========================================
+           Custom CSS & Animations
+           ========================================== */
+        
+        body {
+            background-color: #E8D3B9;
+            color: #6F6F4F;
+            overflow-x: hidden;
+        }
+
+        /* Canvas Background */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.05);
+        }
+
+        /* Scroll Reveal Animation Classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Delay utilities */
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+
+        /* Typewriter Cursor */
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background-color: #4A6C96;
+            vertical-align: middle;
+            animation: blink 1s step-end infinite;
+            margin-left: 2px;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* Premium CTA Button with Tech Hover */
+        .btn-premium {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+        .btn-premium::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(241, 165, 81, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: 0.6s;
+        }
+        .btn-premium:hover {
+            box-shadow: 0 0 20px rgba(241, 165, 81, 0.2);
+            border-color: rgba(241, 165, 81, 0.4);
+            transform: translateY(-2px);
+        }
+        .btn-premium:hover::before {
+            transform: translateX(100%);
+        }
+        
+        /* Button Text Swap on Hover */
+        .btn-text-swap .text-default {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            display: block;
+        }
+        .btn-text-swap .text-hover {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -30%);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            width: 100%;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.85rem;
+            color: #F1A551; /* 強調色橙 */
+            letter-spacing: 1px;
+        }
+        .btn-text-swap:hover .text-default {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        .btn-text-swap:hover .text-hover {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Custom Highlight */
+        .text-highlight {
+            position: relative;
+            z-index: 1;
+        }
+        .text-highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 0;
+            width: 100%;
+            height: 30%;
+            background-color: rgba(215, 122, 115, 0.2); /* 陶土紅 */
+            z-index: -1;
+            transition: height 0.3s ease;
+        }
+        .text-highlight:hover::after {
+            height: 100%;
+            background-color: rgba(215, 122, 115, 0.15);
+        }
+
+        /* Portfolio icon badge: gradient + shadow (設計師風格) */
+        .icon-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #4A6C96 0%, #F1A551 100%);
+            box-shadow: 0 8px 20px rgba(74,108,150,0.12), 0 2px 6px rgba(0,0,0,0.08);
+            color: #ffffff;
+            font-size: 1.05rem;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            z-index: 20;
+        }
+        .icon-badge i { color: #fff; }
+        .icon-badge:hover { transform: translateY(-4px) scale(1.05); box-shadow: 0 18px 36px rgba(74,108,150,0.18); }
+    </style>
+</head>
+<body class="antialiased selection:bg-brand-terra selection:text-white">
+
+    <!-- Background Animation Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 py-4 glass-panel border-b-0 border-t-0 border-x-0">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 flex justify-between items-center">
+            <a href="#" class="font-serif text-2xl font-semibold tracking-wide flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-brand-terra"></span>
+                Sammy's Style
+            </a>
+            
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex space-x-8 text-sm font-medium tracking-widest text-brand-dark/70">
+                <a href="#about" class="hover:text-brand-dark transition-colors hover:bg-brand-dark/5 px-3 py-1 rounded-full">關於 Sammy</a>
+                <a href="#services" class="hover:text-brand-dark transition-colors hover:bg-brand-dark/5 px-3 py-1 rounded-full">解決方案</a>
+                <a href="#portfolio" class="hover:text-brand-dark transition-colors hover:bg-brand-dark/5 px-3 py-1 rounded-full">實戰案例</a>
+            </div>
+
+            <!-- CTA -->
+            <div class="hidden md:block">
+                <a href="https://calendar.app.google/XFvjqUqWoHFdACfy5" target="_blank" 
+                   class="btn-premium btn-text-swap glass-panel px-6 py-2.5 rounded-full border border-brand-dark/20 text-sm font-medium flex items-center justify-center min-w-[140px]">
+                    <span class="text-default">預約諮詢</span>
+                    <span class="text-hover">Status: Ready</span>
+                </a>
+            </div>
+
+            <!-- Mobile Toggle (Simplified for demo) -->
+            <button class="md:hidden text-brand-dark">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative min-h-screen flex items-center justify-center pt-20 px-6">
+        <div class="max-w-4xl mx-auto text-center reveal active">
+            <div class="inline-block mb-6 px-4 py-1.5 rounded-full border border-brand-terra/30 bg-brand-terra/5 text-brand-terra text-xs font-tech tracking-widest">
+                BUSINESS-DRIVEN DESIGN CONSULTANCY
+            </div>
+            
+            <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold text-brand-dark leading-tight mb-8">
+                <span id="typewriter-text"></span><span class="cursor"></span>
+            </h1>
+            
+            <p class="text-lg md:text-xl text-brand-dark/70 leading-relaxed max-w-3xl mx-auto mb-12 font-light reveal delay-100">
+                從預算控管到視覺落地，用深厚的藝文底蘊與俐落的專案執行，<br class="hidden md:block">
+                為品牌說出<span class="text-highlight font-medium text-brand-dark">最具商業價值</span>的故事。
+            </p>
+            
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 reveal delay-200">
+                <a href="https://calendar.app.google/XFvjqUqWoHFdACfy5" target="_blank" 
+                   class="btn-premium btn-text-swap bg-brand-dark text-white px-8 py-4 rounded-full font-medium tracking-wide flex items-center justify-center min-w-[200px] shadow-lg shadow-brand-dark/20">
+                    <span class="text-default">啟動品牌升級專案</span>
+                    <span class="text-hover !text-white flex items-center gap-2">
+                        <i data-lucide="calendar" class="w-4 h-4"></i> Schedule Call
+                    </span>
+                </a>
+                <a href="#portfolio" class="px-8 py-4 rounded-full font-medium text-brand-dark/70 hover:text-brand-dark transition-colors flex items-center gap-2 group">
+                    探索案例 <i data-lucide="arrow-down" class="w-4 h-4 group-hover:translate-y-1 transition-transform"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-24 md:py-32 px-6 relative z-10">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+                
+                <!-- Left: Typography/Visual Art -->
+                <div class="lg:col-span-5 reveal relative">
+                    <div class="aspect-[4/5] glass-panel rounded-3xl p-8 flex flex-col justify-between overflow-hidden group">
+                        <!-- Abstract decorative elements -->
+                        <div class="absolute top-0 right-0 w-64 h-64 bg-brand-terra/10 rounded-full blur-3xl -mr-20 -mt-20 group-hover:bg-brand-mint/10 transition-colors duration-700"></div>
+                        
+                        <div>
+                            <h3 class="font-serif text-5xl md:text-7xl text-brand-dark/10 font-bold mb-4">Logic<br>meets<br>Art.</h3>
+                        </div>
+                        <div class="relative z-10">
+                            <p class="font-tech text-brand-terra text-sm tracking-widest mb-2">FOUNDER & DIRECTOR</p>
+                            <h2 class="text-3xl font-bold font-serif text-brand-dark">Sammy</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Text Content -->
+                <div class="lg:col-span-7 space-y-8 reveal delay-100">
+                    <h2 class="text-3xl md:text-4xl font-bold text-brand-dark">設計不只是美學，<br>更是解決商業問題的精準利器。</h2>
+                    
+                    <div class="space-y-6 text-brand-dark/75 leading-relaxed text-lg font-light">
+                        <p>
+                            你好，我是 Sammy。我的職涯起點與傳統設計師不同——我擁有 <strong class="font-medium text-brand-dark">Fintech 金融科技領域的專案管理與海外業務經歷</strong>，加上 <strong class="font-medium text-brand-dark">美國 MBA 的高階商業管理訓練</strong>，這份背景讓我能以清晰的「商務邏輯」來驅動視覺設計。
+                        </p>
+                        <p>
+                            在執行品牌專案時，我能一手包辦從前期的預算編列、成本控管，到嚴謹的時程進度把關，確保每一次的設計都能完美落地。無論是企劃充滿說服力的品牌活動簡報，或是打造深植人心的 Logo 與社群視覺，我都能讓設計緊扣著你的商業目標。
+                        </p>
+                        <p>
+                            自 2023 年深耕 VIS、包裝及品牌改造以來，我曾操刀 <span class="text-highlight font-medium">美珍香</span> 等知名專案，並為 <span class="text-highlight font-medium">盛香珍</span> 策劃過專屬節慶包裝與客製視覺。長年累積的藝文底蘊，讓我能敏銳捕捉市場趨勢，為你的品牌量身打造兼具<strong class="font-medium text-brand-terra">市場商業深度與美學張力</strong>的專屬視覺。
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pt-6 border-t border-brand-dark/10">
+                        <div>
+                            <div class="text-2xl font-bold font-serif text-brand-dark">MBA</div>
+                            <div class="text-xs text-brand-dark/60 mt-1 font-tech">BUSINESS LOGIC</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold font-serif text-brand-dark">Fintech</div>
+                            <div class="text-xs text-brand-dark/60 mt-1 font-tech">PROJECT MGMT</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold font-serif text-brand-dark">ROI</div>
+                            <div class="text-xs text-brand-dark/60 mt-1 font-tech">DRIVEN DESIGN</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold font-serif text-brand-dark">2023+</div>
+                            <div class="text-xs text-brand-dark/60 mt-1 font-tech">BRAND EXPERT</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-24 md:py-32 px-6 relative z-10 bg-white/20 backdrop-blur-sm border-y border-white/40">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 md:mb-24 reveal">
+                <p class="font-tech text-brand-terra text-sm tracking-widest mb-4">OUR EXPERTISE</p>
+                <h2 class="text-3xl md:text-5xl font-bold text-brand-dark mb-6">設計，是驅動商業成長的精準投資</h2>
+                <p class="text-lg text-brand-dark/60 max-w-2xl mx-auto font-light">在 Sammy's Style Solutions，我們不只談美學，更談轉換率與 ROI。將企業級專案管理標準導入設計流程，確保您的每一分投資都花在刀口上。</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Service 1 -->
+                <div class="glass-panel p-10 rounded-3xl hover:-translate-y-2 transition-all duration-500 hover:shadow-2xl hover:shadow-brand-mint/10 group reveal">
+                    <div class="w-14 h-14 rounded-full bg-brand-dark/5 flex items-center justify-center mb-8 group-hover:bg-brand-mint/10 group-hover:text-brand-mint transition-colors">
+                        <i data-lucide="briefcase" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-dark mb-4">商務邏輯驅動視覺</h3>
+                    <p class="text-brand-dark/70 font-light leading-relaxed">
+                        深知企業主在意的是設計能否降低溝通成本、提升品牌溢價。以嚴謹的商務邏輯為骨幹，洗鍊的美學為血肉，打造不只好看，更能解決問題的視覺。
+                    </p>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="glass-panel p-10 rounded-3xl hover:-translate-y-2 transition-all duration-500 hover:shadow-2xl hover:shadow-brand-mint/10 group reveal delay-100">
+                    <div class="w-14 h-14 rounded-full bg-brand-dark/5 flex items-center justify-center mb-8 group-hover:bg-brand-mint/10 group-hover:text-brand-mint transition-colors">
+                        <i data-lucide="clock" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-dark mb-4">專案與成本精準控管</h3>
+                    <p class="text-brand-dark/70 font-light leading-relaxed">
+                        時間與預算是最寶貴的資源。憑藉處理大型系統實戰經驗，導入企業級專案管理。從需求對焦到時程管控，有效杜絕無效溝通與預算超支。
+                    </p>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="glass-panel p-10 rounded-3xl hover:-translate-y-2 transition-all duration-500 hover:shadow-2xl hover:shadow-brand-mint/10 group reveal delay-200">
+                    <div class="w-14 h-14 rounded-full bg-brand-dark/5 flex items-center justify-center mb-8 group-hover:bg-brand-mint/10 group-hover:text-brand-mint transition-colors">
+                        <i data-lucide="layers" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-dark mb-4">全方位品牌視覺賦能</h3>
+                    <ul class="space-y-3 text-brand-dark/70 font-light">
+                        <li class="flex items-start gap-2">
+                            <span class="text-brand-terra mt-1 text-xs">◆</span>
+                            <span>品牌識別建構 (Logo / VIS 系統)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-brand-terra mt-1 text-xs">◆</span>
+                            <span>商業溝通利器 (品牌活動簡報設計)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-brand-terra mt-1 text-xs">◆</span>
+                            <span>行銷轉換視覺 (海報/包裝/社群圖文)</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section (Simplified for Demo) -->
+    <section id="portfolio" class="py-24 md:py-32 px-6 relative z-10">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 reveal">
+                <div>
+                    <p class="font-tech text-brand-terra text-sm tracking-widest mb-4">SELECTED WORKS</p>
+                    <h2 class="text-3xl md:text-5xl font-bold text-brand-dark">實戰案例</h2>
+                </div>
+                <a href="https://calendar.app.google/XFvjqUqWoHFdACfy5" target="_blank" class="text-brand-dark font-medium hover:text-brand-terra transition-colors flex items-center gap-2 mt-6 md:mt-0 pb-1 border-b border-brand-dark/20 hover:border-brand-terra">
+                    預約觀看完整作品集 <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Case 1: 盛香珍 -->
+                <div class="group cursor-pointer reveal">
+                    <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-white glass-panel flex items-center justify-center relative">
+                        <!-- Mockup placeholder -->
+                        <div class="absolute inset-0 bg-gradient-to-tr from-brand-dark/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <h3 class="font-serif text-4xl text-brand-dark/20 group-hover:scale-110 transition-transform duration-700">盛香珍</h3>
+                        
+                        <!-- Hover Tech UI -->
+                        <div class="absolute bottom-6 left-6 right-6 flex justify-between items-end opacity-0 group-hover:opacity-100 transition-opacity duration-500 translate-y-4 group-hover:translate-y-0 delay-100">
+                            <div>
+                                <div class="text-xs font-tech text-brand-mint mb-1">PACKAGING & VISUAL</div>
+                                <div class="text-lg font-bold text-brand-dark">馬年專屬節慶包裝與客製化視覺</div>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-brand-dark text-white flex items-center justify-center">
+                                <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Case 2: 美珍香 -->
+                <div class="group cursor-pointer reveal delay-100">
+                    <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-white glass-panel flex items-center justify-center relative">
+                        <!-- Mockup placeholder -->
+                        <div class="absolute inset-0 bg-gradient-to-tr from-brand-dark/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <h3 class="font-serif text-4xl text-brand-dark/20 group-hover:scale-110 transition-transform duration-700">美珍香</h3>
+                        
+                        <!-- Hover Tech UI -->
+                        <div class="absolute bottom-6 left-6 right-6 flex justify-between items-end opacity-0 group-hover:opacity-100 transition-opacity duration-500 translate-y-4 group-hover:translate-y-0 delay-100">
+                            <div>
+                                <div class="text-xs font-tech text-brand-mint mb-1">BRANDING & RE-DESIGN</div>
+                                <div class="text-lg font-bold text-brand-dark">品牌視覺改造與包裝專案</div>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-brand-dark text-white flex items-center justify-center">
+                                <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 個人作品集展示 (新增區塊) -->
+    <section id="showcase" class="py-20 px-6 relative z-10">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center justify-between mb-12 reveal">
+                <div>
+                    <p class="font-tech text-brand-terra text-sm tracking-widest mb-2">PERSONAL SHOWCASE</p>
+                    <h2 class="text-2xl md:text-4xl font-bold text-brand-dark">個人作品集展示</h2>
+                    <p class="text-brand-dark/70 mt-3 max-w-2xl font-light">每項專案作品展示（作品圖＋設計理念說明）。完整作品集請點選下方連結查看。</p>
+                </div>
+                <a href="https://www.canva.com/design/DAHEmFd9hqI/IJmSHb6CBEtUXyE8qxJXlQ/edit" target="_blank" class="text-brand-dark font-medium hover:text-brand-terra transition-colors flex items-center gap-2">查看完整作品集 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Portfolio Item 1 -->
+                <div class="glass-panel rounded-2xl overflow-hidden p-4 reveal">
+                    <a href="https://www.canva.com/design/DAHEmFd9hqI/IJmSHb6CBEtUXyE8qxJXlQ/edit" target="_blank" class="block relative group">
+                        <img src="https://via.placeholder.com/800x600?text=作品+1" alt="作品 1" class="w-full h-56 object-cover rounded-lg">
+                        <div class="icon-badge">
+                            <i class="fa-solid fa-palette text-xl"></i>
+                        </div>
+                        <div class="mt-4">
+                            <h3 class="font-bold text-lg text-brand-dark">作品名稱 1</h3>
+                            <p class="text-sm text-brand-dark/70 mt-2">設計理念說明：以商業轉換為目標，結合視覺敘事與包裝策略。</p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Portfolio Item 2 -->
+                <div class="glass-panel rounded-2xl overflow-hidden p-4 reveal delay-100">
+                    <a href="https://www.canva.com/design/DAHEmFd9hqI/IJmSHb6CBEtUXyE8qxJXlQ/edit" target="_blank" class="block relative group">
+                        <img src="https://via.placeholder.com/800x600?text=作品+2" alt="作品 2" class="w-full h-56 object-cover rounded-lg">
+                        <div class="icon-badge">
+                            <i class="fa-solid fa-pen-nib text-xl"></i>
+                        </div>
+                        <div class="mt-4">
+                            <h3 class="font-bold text-lg text-brand-dark">作品名稱 2</h3>
+                            <p class="text-sm text-brand-dark/70 mt-2">設計理念說明：品牌視覺改造，提升識別度並強化市場溝通。</p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Portfolio Item 3 -->
+                <div class="glass-panel rounded-2xl overflow-hidden p-4 reveal delay-200">
+                    <a href="https://www.canva.com/design/DAHEmFd9hqI/IJmSHb6CBEtUXyE8qxJXlQ/edit" target="_blank" class="block relative group">
+                        <img src="https://via.placeholder.com/800x600?text=作品+3" alt="作品 3" class="w-full h-56 object-cover rounded-lg">
+                        <div class="icon-badge">
+                            <i class="fa-solid fa-vector-square text-xl"></i>
+                        </div>
+                        <div class="mt-4">
+                            <h3 class="font-bold text-lg text-brand-dark">作品名稱 3</h3>
+                            <p class="text-sm text-brand-dark/70 mt-2">設計理念說明：社群行銷素材與活動視覺，強化點擊與分享動機。</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 多元社群圖示配置 -->
+    <section id="social" class="py-20 px-6 relative z-10">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <p class="font-tech text-brand-terra text-sm tracking-widest mb-4">CONNECT WITH ME</p>
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-dark mb-6">追蹤我的社群</h2>
+                <p class="text-brand-dark/70 font-light max-w-2xl mx-auto">透過不同平台與我連繫，掌握最新設計案例與商業趨勢分享。</p>
+            </div>
+
+            <!-- Social Links Grid (Dependencies Style) -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-5xl mx-auto">
+                <!-- LINE -->
+                <a href="https://line.me" target="_blank" class="group reveal">
+                    <div class="glass-panel p-8 rounded-2xl text-center hover:shadow-lg hover:-translate-y-2 transition-all duration-300">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-[#00B900] to-[#009000] rounded-full flex items-center justify-center text-white transform group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-brands fa-line text-2xl"></i>
+                        </div>
+                        <h3 class="text-sm font-bold text-brand-dark">LINE</h3>
+                        <p class="text-xs text-brand-dark/60 mt-1">即時溝通</p>
+                    </div>
+                </a>
+
+                <!-- Facebook -->
+                <a href="https://facebook.com" target="_blank" class="group reveal delay-100">
+                    <div class="glass-panel p-8 rounded-2xl text-center hover:shadow-lg hover:-translate-y-2 transition-all duration-300">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-[#1877F2] to-[#0A66C2] rounded-full flex items-center justify-center text-white transform group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-brands fa-facebook-f text-2xl"></i>
+                        </div>
+                        <h3 class="text-sm font-bold text-brand-dark">Facebook</h3>
+                        <p class="text-xs text-brand-dark/60 mt-1">品牌推廣</p>
+                    </div>
+                </a>
+
+                <!-- Instagram -->
+                <a href="https://www.instagram.com/sammy_style_solutions/" target="_blank" class="group reveal delay-100">
+                    <div class="glass-panel p-8 rounded-2xl text-center hover:shadow-lg hover:-translate-y-2 transition-all duration-300">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-[#FD1D1D] via-[#F77737] to-[#FCAF45] rounded-full flex items-center justify-center text-white transform group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-brands fa-instagram text-2xl"></i>
+                        </div>
+                        <h3 class="text-sm font-bold text-brand-dark">Instagram</h3>
+                        <p class="text-xs text-brand-dark/60 mt-1">設計作品集</p>
+                    </div>
+                </a>
+
+                <!-- LinkedIn -->
+                <a href="https://linkedin.com" target="_blank" class="group reveal delay-200">
+                    <div class="glass-panel p-8 rounded-2xl text-center hover:shadow-lg hover:-translate-y-2 transition-all duration-300">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-[#0077B5] to-[#005A8E] rounded-full flex items-center justify-center text-white transform group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-brands fa-linkedin-in text-2xl"></i>
+                        </div>
+                        <h3 class="text-sm font-bold text-brand-dark">LinkedIn</h3>
+                        <p class="text-xs text-brand-dark/60 mt-1">專業經歷</p>
+                    </div>
+                </a>
+
+                <!-- GitHub -->
+                <a href="https://github.com" target="_blank" class="group reveal delay-200">
+                    <div class="glass-panel p-8 rounded-2xl text-center hover:shadow-lg hover:-translate-y-2 transition-all duration-300">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-[#333] to-[#000] rounded-full flex items-center justify-center text-white transform group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-brands fa-github text-2xl"></i>
+                        </div>
+                        <h3 class="text-sm font-bold text-brand-dark">GitHub</h3>
+                        <p class="text-xs text-brand-dark/60 mt-1">技術作品</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 聯絡表單區塊 -->
+    <section id="contact-form" class="py-20 px-6 relative z-10 bg-gradient-to-br from-brand-dark/5 to-brand-terra/5 rounded-3xl mx-6 md:mx-12">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12 reveal">
+                <p class="font-tech text-brand-terra text-sm tracking-widest mb-4">GET IN TOUCH</p>
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-dark mb-4">填寫需求表單</h2>
+                <p class="text-brand-dark/70 font-light max-w-2xl mx-auto">請詳細描述您的專案需求，我將在 24 小時內回覆您的諮詢。</p>
+            </div>
+
+            <div class="glass-panel p-8 md:p-12 rounded-2xl reveal delay-100 flex flex-col md:flex-row items-center gap-8 border border-brand-terra/10">
+                <div class="flex-1">
+                    <h3 class="text-2xl font-bold text-brand-dark mb-4">您的專案資訊</h3>
+                    <ul class="space-y-3 text-brand-dark/70 font-light">
+                        <li class="flex items-start gap-3">
+                            <span class="text-brand-terra text-lg">▪</span>
+                            <span>簡要描述您的品牌或產品</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-brand-terra text-lg">▪</span>
+                            <span>指定所需的設計服務類型</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-brand-terra text-lg">▪</span>
+                            <span>預估預算與時程</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-brand-terra text-lg">▪</span>
+                            <span>提供聯絡資訊便於回覆</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="flex-1 w-full md:w-auto">
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSf9333mpEoU6_ueajxwIeDuZrvre_YDk9fSH-WRpXOkgqRGUQ/viewform?usp=publish-editor" target="_blank" 
+                       class="btn-premium btn-text-swap block w-full bg-brand-terra text-white px-8 py-5 rounded-full font-medium tracking-wide text-center shadow-xl shadow-brand-terra/20 hover:bg-brand-dark transition-colors">
+                        <span class="text-default flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-pen-to-square"></i> 開始填寫表單
+                        </span>
+                        <span class="text-hover !text-white flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-arrow-up-right"></i> Open Form
+                        </span>
+                    </a>
+                    <p class="text-xs text-brand-dark/50 text-center mt-4 font-tech">感謝您的信任，期待與您合作！</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA / Contact -->
+    <section class="py-32 px-6 relative z-10 text-center">
+        <div class="max-w-3xl mx-auto glass-panel p-12 md:p-20 rounded-[3rem] reveal border border-brand-terra/20 shadow-2xl shadow-brand-terra/5">
+            <h2 class="text-3xl md:text-5xl font-bold font-serif text-brand-dark mb-6">Let's build something<br>commercially beautiful.</h2>
+            <p class="text-brand-dark/70 mb-10 font-light text-lg">準備好讓設計成為推動品牌的投資了嗎？<br>預約 30 分鐘免費線上諮詢，對焦您的商業需求。</p>
+            
+            <a href="https://calendar.app.google/XFvjqUqWoHFdACfy5" target="_blank" 
+               class="btn-premium btn-text-swap inline-flex bg-brand-dark text-white px-10 py-5 rounded-full font-medium tracking-wide shadow-xl shadow-brand-dark/20 text-lg">
+                <span class="text-default">立即預約諮詢</span>
+                <span class="text-hover !text-white flex items-center justify-center gap-2">
+                    <i data-lucide="video" class="w-5 h-5"></i> Open Google Calendar
+                </span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-brand-dark/10 py-8 px-6 relative z-10 bg-brand-bg">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="font-serif text-xl font-semibold flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-brand-terra"></span>
+                Sammy's Style
+            </div>
+            <div class="text-sm text-brand-dark/50 font-tech">
+                © <span id="year"></span> Sammy's Style Solutions. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Interactions -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        /* ==========================================
+           1. Typewriter Effect
+           ========================================== */
+        const textToType = "洞悉商業脈絡，形塑品牌美學張力。";
+        const typeContainer = document.getElementById("typewriter-text");
+        let charIndex = 0;
+
+        function typeWriter() {
+            if (charIndex < textToType.length) {
+                typeContainer.innerHTML += textToType.charAt(charIndex);
+                charIndex++;
+                // Slight random delay for realism
+                setTimeout(typeWriter, Math.random() * 50 + 100); 
+            }
+        }
+        
+        // Start typewriter after a short delay
+        setTimeout(typeWriter, 500);
+
+        /* ==========================================
+           2. Scroll Reveal Animation
+           ========================================== */
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100; // trigger point
+
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal(); // Trigger on load
+
+        /* ==========================================
+           3. White Cyber Tech Canvas Background 
+              (Particles, Lines, Mouse Parallax)
+           ========================================== */
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let w, h;
+        
+        // Mouse tracking for parallax
+        let mouse = {
+            x: null,
+            y: null,
+            radius: 150 // Connection radius for mouse
+        };
+
+        window.addEventListener('mousemove', function(event) {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+
+        // Handle resize
+        function resizeCanvas() {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+            initParticles();
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * w;
+                this.y = Math.random() * h;
+                // Slow movement for "Premium Consulting" feel, not chaotic
+                this.vx = (Math.random() - 0.5) * 0.3; 
+                this.vy = (Math.random() - 0.5) * 0.3;
+                this.baseRadius = Math.random() * 1.5 + 0.5;
+                this.radius = this.baseRadius;
+                // Light tech blue/gray color - updated to match brand palette
+                this.color = 'rgba(74, 108, 150, 0.3)'; 
+            }
+            
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Bounce off edges smoothly
+                if (this.x < 0 || this.x > w) this.vx = -this.vx;
+                if (this.y < 0 || this.y > h) this.vy = -this.vy;
+
+                // Mouse interaction (Parallax push)
+                if (mouse.x != null) {
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < mouse.radius) {
+                        const forceDirectionX = dx / distance;
+                        const forceDirectionY = dy / distance;
+                        const maxDistance = mouse.radius;
+                        const force = (maxDistance - distance) / maxDistance;
+                        
+                        // Push away slightly
+                        this.x -= forceDirectionX * force * 1.5;
+                        this.y -= forceDirectionY * force * 1.5;
+                    }
+                }
+                
+                this.draw();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            // Number of particles depends on screen size to maintain density
+            let numParticles = (w * h) / 12000; 
+            for (let i = 0; i < numParticles; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function connectParticles() {
+            let opacityValue = 1;
+            for (let a = 0; a < particles.length; a++) {
+                for (let b = a; b < particles.length; b++) {
+                    let distance = ((particles[a].x - particles[b].x) * (particles[a].x - particles[b].x))
+                                 + ((particles[a].y - particles[b].y) * (particles[a].y - particles[b].y));
+                    
+                    // Connection distance
+                    if (distance < (w/10) * (h/10)) {
+                        opacityValue = 1 - (distance / 20000);
+                        if(opacityValue > 0) {
+                            ctx.strokeStyle = `rgba(215, 122, 115, ${opacityValue * 0.05})`; // Terracotta tint for lines (brand terra color)
+                            ctx.lineWidth = 0.5;
+                            ctx.beginPath();
+                            ctx.moveTo(particles[a].x, particles[a].y);
+                            ctx.lineTo(particles[b].x, particles[b].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+        }
+
+        function animateCanvas() {
+            requestAnimationFrame(animateCanvas);
+            ctx.clearRect(0, 0, w, h);
+            
+            // Draw subtle Grid lines for "Tech" feel
+            drawGrid();
+
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+            }
+            connectParticles();
+        }
+
+        function drawGrid() {
+            ctx.strokeStyle = 'rgba(200, 200, 200, 0.05)';
+            ctx.lineWidth = 1;
+            const gridSize = 100;
+            
+            ctx.beginPath();
+            for (let x = 0; x <= w; x += gridSize) {
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, h);
+            }
+            for (let y = 0; y <= h; y += gridSize) {
+                ctx.moveTo(0, y);
+                ctx.lineTo(w, y);
+            }
+            ctx.stroke();
+        }
+
+        // Initialize and start animation
+        resizeCanvas();
+        animateCanvas();
+
+        // Handle mouse out to reset parallax
+        window.addEventListener('mouseout', function() {
+            mouse.x = undefined;
+            mouse.y = undefined;
+        });
+
+    </script>
+</body>
+</html>
